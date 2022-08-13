@@ -3,7 +3,6 @@ package map.naver.plugin.net.note11.naver_map_plugin
 import map.naver.plugin.net.note11.naver_map_plugin.Convert.toCoords
 import map.naver.plugin.net.note11.naver_map_plugin.Convert.toColorInt
 import map.naver.plugin.net.note11.naver_map_plugin.Convert.toOverlayImage
-import map.naver.plugin.net.note11.naver_map_plugin.Convert.toOverlayImageFromPath
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.PathOverlay
@@ -73,9 +72,6 @@ class NaverPathsController(
             val patternImage = option["patternImage"]
             if (patternImage != null) path.patternImage =
                 toOverlayImage(patternImage)
-            val patternImageFromPath = option["patternImageFromPath"]
-            if (patternImageFromPath != null) path.patternImage =
-                toOverlayImageFromPath(patternImageFromPath)
             val patternInterval = option["patternInterval"]
             if (patternInterval != null) path.patternInterval =
                 (patternInterval as Int * density).roundToInt()
