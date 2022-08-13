@@ -6,6 +6,7 @@ import map.naver.plugin.net.note11.naver_map_plugin.Convert.toLatLng
 import map.naver.plugin.net.note11.naver_map_plugin.Convert.toPoint
 import map.naver.plugin.net.note11.naver_map_plugin.Convert.toColorInt
 import map.naver.plugin.net.note11.naver_map_plugin.Convert.toOverlayImage
+import map.naver.plugin.net.note11.naver_map_plugin.Convert.toOverlayImageFromPath
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.overlay.Overlay
 import android.os.Looper
@@ -29,22 +30,16 @@ class NaverMarkerController(
     private var markerIdOfInfoWindow: String? = null
     fun add(jsonArray: List<Any?>?) {
         if (jsonArray == null || jsonArray.isEmpty()) return
-        val service = Executors.newCachedThreadPool()
-        service.execute {
             for (json in jsonArray) {
                 val data = json as HashMap<String, Any>
                 val marker = MarkerController(data)
                 marker.setOnClickListener(onClickListener)
                 idToController[marker.id] = marker
             }
-            handler.post {
-                val markers: List<MarkerController?> = idToController.values.toList()
-                for (marker in markers) {
-                    marker!!.setMap(naverMap)
-                }
+            val markers: List<MarkerController?> = idToController.values.toList()
+            for (marker in markers) {
+               marker!!.setMap(naverMap)
             }
-        }
-        service.shutdown()
     }
 
     fun remove(jsonArray: List<Any?>?) {
@@ -147,6 +142,8 @@ class NaverMarkerController(
                 (subCaptionRequestedWidth as Int * this@NaverMarkerController.density).roundToInt()
             val icon = json["icon"]
             if (icon != null) marker.icon = toOverlayImage(icon)
+            val iconImagePath = json["iconFromPath"]
+            if (iconImagePath != null) marker.icon = toOverlayImageFromPath(iconImagePath)
             val infoWindow = json["infoWindow"]
             infoWindowText = if (infoWindow != null) infoWindow as String? else null
         }

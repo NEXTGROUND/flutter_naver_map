@@ -1,13 +1,16 @@
 part of flutter_naver_map;
 
 class NaverMapController {
-  NaverMapController._(this._channel, CameraPosition? initialCameraPosition, this._naverMapState) {
+  NaverMapController._(this._channel, CameraPosition? initialCameraPosition,
+      this._naverMapState) {
     _channel.setMethodCallHandler(_handleMethodCall);
     locationOverlay = LocationOverlay(this);
   }
 
   static Future<NaverMapController> init(
-      int id, CameraPosition? initialCameraPosition, _NaverMapState naverMapState) async {
+      int id,
+      CameraPosition? initialCameraPosition,
+      _NaverMapState naverMapState) async {
     final MethodChannel channel = MethodChannel(VIEW_TYPE + '_$id');
 
     await channel.invokeMethod<void>('map#waitForMap');
@@ -115,21 +118,24 @@ class NaverMapController {
     );
   }
 
-  Future<void> _updatePathOverlay(_PathOverlayUpdates pathOverlayUpdates) async {
+  Future<void> _updatePathOverlay(
+      _PathOverlayUpdates pathOverlayUpdates) async {
     await _channel.invokeMethod(
       'pathOverlay#update',
       pathOverlayUpdates._toMap(),
     );
   }
 
-  Future<void> _updateCircleOverlay(_CircleOverlayUpdate circleOverlayUpdate) async {
+  Future<void> _updateCircleOverlay(
+      _CircleOverlayUpdate circleOverlayUpdate) async {
     await _channel.invokeMethod(
       'circleOverlay#update',
       circleOverlayUpdate._toMap(),
     );
   }
 
-  Future<void> _updatePolygonOverlay(_PolygonOverlayUpdate polygonOverlayUpdate) async {
+  Future<void> _updatePolygonOverlay(
+      _PolygonOverlayUpdate polygonOverlayUpdate) async {
     await _channel.invokeMethod(
       'polygonOverlay#update',
       polygonOverlayUpdate._toMap(),
@@ -138,8 +144,8 @@ class NaverMapController {
 
   /// 현재 지도에 보여지는 영역에 대한 [LatLngBounds] 객체를 리턴.
   Future<LatLngBounds> getVisibleRegion() async {
-    final Map<String, dynamic> latLngBounds =
-        (await _channel.invokeMapMethod<String, dynamic>('map#getVisibleRegion'))!;
+    final Map<String, dynamic> latLngBounds = (await _channel
+        .invokeMapMethod<String, dynamic>('map#getVisibleRegion'))!;
     final LatLng southwest = LatLng._fromJson(latLngBounds['southwest'])!;
     final LatLng northeast = LatLng._fromJson(latLngBounds['northeast'])!;
 
@@ -173,9 +179,12 @@ class NaverMapController {
   /// <p>[animationDuration]은 밀리초 단위로 애니메이션 이동 시간을 설정한다.</p>
   /// <p>기본적으로 필수 인자가 아니므로, 전달하지 않으면 기본 애니메이션 시간으로 설정된다.</p>
   /// <p>0을 전달하면, 애니메이션이 없이 이동하게 된다.
-  Future<void> moveCamera(CameraUpdate cameraUpdate, {int? animationDuration}) async {
-    await _channel.invokeMethod<void>(
-        'camera#move', <String, dynamic>{'cameraUpdate': cameraUpdate._toJson(), 'animation': animationDuration});
+  Future<void> moveCamera(CameraUpdate cameraUpdate,
+      {int? animationDuration}) async {
+    await _channel.invokeMethod<void>('camera#move', <String, dynamic>{
+      'cameraUpdate': cameraUpdate._toJson(),
+      'animation': animationDuration
+    });
   }
 
   /// <h2>카메라 추적모드 변경</h2>
@@ -203,7 +212,8 @@ class NaverMapController {
 
   /// <h3>지도의 content padding 을 설정한다.</h3>
   /// <p>인자로 받는 값의 단위는 DP 단위이다.</p>
-  Future<void> setContentPadding({double? left, double? right, double? top, double? bottom}) async {
+  Future<void> setContentPadding(
+      {double? left, double? right, double? top, double? bottom}) async {
     await _channel.invokeMethod('map#padding', <String, dynamic>{
       'left': left ?? 0.0,
       'right': right ?? 0.0,
@@ -235,7 +245,8 @@ class LocationOverlay {
 
   /// 해당 객체를 참조하기 위햐서 [NaverMapController]의 맵버변수를 참조하거나,
   /// [NaverMapController]객체를 인자로 넘겨서 새롭게 생성하여 참조한다.
-  LocationOverlay(NaverMapController controller) : _channel = controller._channel;
+  LocationOverlay(NaverMapController controller)
+      : _channel = controller._channel;
 
   /// 위치 오버레이의 좌표를 변경할 수 있습니다.
   /// 처음 생성된 위치 오버레이는 카메라의 초기 좌표에 위치해 있습니다.
